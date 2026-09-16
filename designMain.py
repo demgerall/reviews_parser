@@ -15,13 +15,17 @@ class Ui_MainWindow(object):
         MainWindow.resize(600, 600)
         MainWindow.setMinimumSize(QtCore.QSize(600, 600))
         MainWindow.setMaximumSize(QtCore.QSize(600, 600))
+
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("dozer.ico"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         MainWindow.setWindowIcon(icon)
-        MainWindow.setAutoFillBackground(False)
-        MainWindow.setStyleSheet("background-color: rgb(255, 255, 255);")
+
+        # Фон окна оставляем системный (убрали принудительный белый)
+
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+
+        # Заголовок
         self.title_label = QtWidgets.QLabel(parent=self.centralwidget)
         self.title_label.setGeometry(QtCore.QRect(155, 20, 290, 50))
         font = QtGui.QFont()
@@ -30,7 +34,10 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.title_label.setFont(font)
+        self.title_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.title_label.setObjectName("title_label")
+
+        # Кнопка «Начать поиск»
         self.start_button = QtWidgets.QPushButton(parent=self.centralwidget)
         self.start_button.setGeometry(QtCore.QRect(220, 340, 160, 50))
         font = QtGui.QFont()
@@ -40,78 +47,128 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.start_button.setFont(font)
         self.start_button.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
-        self.start_button.setStyleSheet("QPushButton {\n"
-"    border-radius: 20px;\n"
-"    color: rgb(255, 255, 255);\n"
-"    background-color: rgb(0, 0, 0);\n"
-"}\n"
-"QPushButton:hover {\n"
-"    background-color: rgba(0, 0, 0, .7);\n"
-"}")
+        self.start_button.setStyleSheet("""
+            QPushButton {
+                border-radius: 20px;
+                padding: 8px;
+                background-color: #0066cc;
+                color: white;
+                border: none;
+            }
+            QPushButton:hover {
+                background-color: #3385ff;
+            }
+            QPushButton:pressed {
+                background-color: #004c99;
+            }
+            QPushButton:disabled {
+                background-color: #888888;
+                color: #dddddd;
+            }
+        """)
         self.start_button.setObjectName("start_button")
+
+        # Метки статуса и ошибок
         self.status_name_label = QtWidgets.QLabel(parent=self.centralwidget)
         self.status_name_label.setGeometry(QtCore.QRect(25, 400, 550, 30))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         font.setPointSize(10)
         self.status_name_label.setFont(font)
-        self.status_name_label.setStyleSheet("color: green;")
         self.status_name_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.status_name_label.setObjectName("status_name_label")
+
+        self.status_label = QtWidgets.QLabel(parent=self.centralwidget)
+        self.status_label.setGeometry(QtCore.QRect(25, 440, 550, 30))
+        font = QtGui.QFont()
+        font.setFamily("Roboto")
+        font.setPointSize(9)
+        self.status_label.setFont(font)
+        self.status_label.setText("")
+        self.status_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.status_label.setObjectName("status_label")
+
         self.error_name_label = QtWidgets.QLabel(parent=self.centralwidget)
         self.error_name_label.setGeometry(QtCore.QRect(25, 480, 550, 30))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         font.setPointSize(10)
         self.error_name_label.setFont(font)
-        self.error_name_label.setStyleSheet("color: red;")
         self.error_name_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.error_name_label.setObjectName("error_name_label")
-        self.status_label = QtWidgets.QLabel(parent=self.centralwidget)
-        self.status_label.setGeometry(QtCore.QRect(25, 440, 550, 30))
-        font = QtGui.QFont()
-        font.setFamily("Montserrat")
-        font.setPointSize(8)
-        self.status_label.setFont(font)
-        self.status_label.setText("")
-        self.status_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.status_label.setObjectName("status_label")
+
         self.error_label = QtWidgets.QLabel(parent=self.centralwidget)
         self.error_label.setGeometry(QtCore.QRect(25, 520, 550, 60))
         font = QtGui.QFont()
-        font.setFamily("Montserrat")
-        font.setPointSize(8)
+        font.setFamily("Roboto")
+        font.setPointSize(9)
         self.error_label.setFont(font)
         self.error_label.setText("")
         self.error_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.error_label.setWordWrap(True)
         self.error_label.setObjectName("error_label")
+
+        # ───────────────────────────────────────────────
+        # Стиль чекбоксов — с исправленным цветом текста
+        # ───────────────────────────────────────────────
+        checkbox_style = """
+            QCheckBox {
+                spacing: 8px;
+                color: palette(text);           /* ← ключевой фикс: системный цвет текста */
+            }
+            QCheckBox::indicator {
+                width: 18px;
+                height: 18px;
+                border-radius: 3px;
+            }
+            QCheckBox::indicator:unchecked {
+                border: 2px solid palette(mid);
+                background-color: transparent;
+            }
+            QCheckBox::indicator:checked {
+                border: 2px solid #0066cc;
+                background-color: #0066cc;
+            }
+            QCheckBox::indicator:unchecked:disabled {
+                border: 2px solid #aaaaaa;
+                background-color: #dddddd;
+            }
+        """
+
         self.gis_checkBox = QtWidgets.QCheckBox(parent=self.centralwidget)
-        self.gis_checkBox.setGeometry(QtCore.QRect(60, 130, 55, 30))
+        self.gis_checkBox.setGeometry(QtCore.QRect(60, 130, 80, 30))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         font.setPointSize(12)
         self.gis_checkBox.setFont(font)
         self.gis_checkBox.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.gis_checkBox.setChecked(True)
+        self.gis_checkBox.setStyleSheet(checkbox_style)
         self.gis_checkBox.setObjectName("gis_checkBox")
+
         self.yandex_checkBox = QtWidgets.QCheckBox(parent=self.centralwidget)
-        self.yandex_checkBox.setGeometry(QtCore.QRect(145, 130, 75, 30))
+        self.yandex_checkBox.setGeometry(QtCore.QRect(160, 130, 100, 30))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         font.setPointSize(12)
         self.yandex_checkBox.setFont(font)
         self.yandex_checkBox.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.yandex_checkBox.setChecked(True)
+        self.yandex_checkBox.setStyleSheet(checkbox_style)
         self.yandex_checkBox.setObjectName("yandex_checkBox")
-        self.google_checkBox = QtWidgets.QCheckBox(parent=self.centralwidget)
-        self.google_checkBox.setGeometry(QtCore.QRect(250, 130, 75, 30))
+
+        self.dreamjob_checkBox = QtWidgets.QCheckBox(parent=self.centralwidget)
+        self.dreamjob_checkBox.setGeometry(QtCore.QRect(280, 130, 100, 30))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         font.setPointSize(12)
-        self.google_checkBox.setFont(font)
-        self.google_checkBox.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
-        self.google_checkBox.setChecked(True)
-        self.google_checkBox.setObjectName("google_checkBox")
+        self.dreamjob_checkBox.setFont(font)
+        self.dreamjob_checkBox.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
+        self.dreamjob_checkBox.setChecked(True)
+        self.dreamjob_checkBox.setStyleSheet(checkbox_style)
+        self.dreamjob_checkBox.setObjectName("dreamjob_checkBox")
+
+        # Заголовки разделов
         self.search_label = QtWidgets.QLabel(parent=self.centralwidget)
         self.search_label.setGeometry(QtCore.QRect(60, 90, 230, 30))
         font = QtGui.QFont()
@@ -121,6 +178,7 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.search_label.setFont(font)
         self.search_label.setObjectName("search_label")
+
         self.save_label = QtWidgets.QLabel(parent=self.centralwidget)
         self.save_label.setGeometry(QtCore.QRect(60, 170, 210, 30))
         font = QtGui.QFont()
@@ -130,6 +188,7 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.save_label.setFont(font)
         self.save_label.setObjectName("save_label")
+
         self.filename_label = QtWidgets.QLabel(parent=self.centralwidget)
         self.filename_label.setGeometry(QtCore.QRect(60, 250, 210, 30))
         font = QtGui.QFont()
@@ -139,16 +198,35 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.filename_label.setFont(font)
         self.filename_label.setObjectName("filename_label")
+
+        # Стиль полей ввода
+        line_edit_style = """
+            QLineEdit {
+                border: 2px solid palette(mid);
+                border-radius: 6px;
+                padding: 4px 8px;
+                background-color: palette(base);
+                color: palette(text);
+            }
+            QLineEdit:focus {
+                border: 2px solid #0066cc;
+            }
+            QLineEdit:disabled {
+                background-color: palette(window);
+                color: palette(mid);
+            }
+        """
+
         self.save_textEdit = QtWidgets.QLineEdit(parent=self.centralwidget)
-        self.save_textEdit.setGeometry(QtCore.QRect(60, 210, 480, 30))
-        self.save_textEdit.setStyleSheet("border: 2px solid rgb(0, 0, 0)\n"
-"")
+        self.save_textEdit.setGeometry(QtCore.QRect(60, 210, 480, 34))
+        self.save_textEdit.setStyleSheet(line_edit_style)
         self.save_textEdit.setObjectName("save_textEdit")
+
         self.filename_textEdit = QtWidgets.QLineEdit(parent=self.centralwidget)
-        self.filename_textEdit.setGeometry(QtCore.QRect(60, 290, 480, 30))
-        self.filename_textEdit.setStyleSheet("border: 2px solid rgb(0, 0, 0)\n"
-"")
+        self.filename_textEdit.setGeometry(QtCore.QRect(60, 290, 480, 34))
+        self.filename_textEdit.setStyleSheet(line_edit_style)
         self.filename_textEdit.setObjectName("filename_textEdit")
+
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -163,7 +241,7 @@ class Ui_MainWindow(object):
         self.error_name_label.setText(_translate("MainWindow", "--Ошибки--"))
         self.gis_checkBox.setText(_translate("MainWindow", "2GIS"))
         self.yandex_checkBox.setText(_translate("MainWindow", "Yandex"))
-        self.google_checkBox.setText(_translate("MainWindow", "Google"))
+        self.dreamjob_checkBox.setText(_translate("MainWindow", "DreamJob"))
         self.search_label.setText(_translate("MainWindow", "Выполнить поиск по:"))
         self.save_label.setText(_translate("MainWindow", "Сохранить по пути:"))
         self.filename_label.setText(_translate("MainWindow", "Название файла:"))
